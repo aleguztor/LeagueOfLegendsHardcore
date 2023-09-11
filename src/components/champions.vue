@@ -10,8 +10,9 @@ export default {
             name: "",
             confirm: useConfirm(),
             toast: useToast(),
-            localStorageChamps:  localStorage.getItem("campeonesDeleted")? JSON.parse(
-                localStorage.getItem("campeonesDeleted")):[],
+            localStorageChamps: localStorage.getItem("campeonesDeleted")
+                ? JSON.parse(localStorage.getItem("campeonesDeleted"))
+                : [],
             showDeleted: false,
         };
     },
@@ -22,6 +23,17 @@ export default {
                 return this.champions.length - this.localStorageChamps.length;
             }
             return this.champions.length;
+        },
+        localStorageToShow() {
+            if (this.name.length > 0) {
+                return this.localStorageChamps.filter((champ) =>
+                    champ[1].name
+                        .toLocaleLowerCase()
+                        .includes(this.name.toLocaleLowerCase())
+                );
+            } else {
+                return this.localStorageChamps;
+            }
         },
         championsToShow() {
             if (this.name.length > 0) {
@@ -50,6 +62,15 @@ export default {
             }
         },
     },
+    watch: {
+        showDeleted: {
+            deep: true,
+            handler: (newVal, oldVal) => {
+                if (newVal) {
+                }
+            },
+        },
+    },
     methods: {
         confirm1(event, champ) {
             if (!this.showDeleted) {
@@ -70,7 +91,6 @@ export default {
             this.showDeleted = !this.showDeleted;
         },
         insertStorage(champ) {
-            // localStorage.clear();
             if (this.localStorageChamps) {
                 if (
                     !this.localStorageChamps.some(
@@ -147,23 +167,17 @@ export default {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 50px; flex-wrap: wrap;
+                    gap: 50px;
+                    flex-wrap: wrap;
                 "
             >
-            <h3 style="width: 150px; text-align: center">
-                    {{
-                       
-                          
-                             "VIVOS " + countAlive
-                    }}
+                <h3 style="width: 150px; text-align: center">
+                    {{ "VIVOS " + countAlive }}
                 </h3>
                 <h3 style="width: 150px; text-align: center">
-                    {{
-                       "ELIMINADOS " + localStorageChamps.length
-                          
-                    }}
+                    {{ "ELIMINADOS " + localStorageChamps.length }}
                 </h3>
-               
+
                 <button
                     :class="showDeleted ? 'notshowDeleted' : 'showDeleted'"
                     style="
@@ -190,7 +204,7 @@ export default {
             v-bind:key="key"
             v-for="(champion, key) in !showDeleted
                 ? championsToShow
-                : localStorageChamps"
+                : localStorageToShow"
         >
             <div style="z-index: 10">
                 <h2>{{ champion[1].name }}</h2>
