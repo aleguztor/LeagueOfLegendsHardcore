@@ -52,7 +52,7 @@ export default {
     },
     methods: {
         confirm1(event, champ) {
-            if (!showDeleted) {
+            if (!this.showDeleted) {
                 this.confirm.require({
                     target: event.currentTarget,
                     acceptLabel: "Sí",
