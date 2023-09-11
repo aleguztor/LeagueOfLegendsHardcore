@@ -4,20 +4,47 @@ import champions from "./components/champions.vue";
 import Informacion from "./views/informacion.vue";
 import Ranking from "./views/ranking.vue";
 import Eventos from "./views/eventos.vue";
-import Toast from 'primevue/toast';
+import Toast from "primevue/toast";
+import DateUntilRecover from "./components/dateUntilRecover.vue";
+// import "./js/simplyCountDown.min.js";
+// import updateClock from "./js/countdown.js";
 
 export default {
-    components: { champions, Ranking, Eventos, Informacion,Toast },
+    components: {
+        champions,
+        Ranking,
+        Eventos,
+        Informacion,
+        Toast,
+        DateUntilRecover,
+    },
     data() {
         return {
             champions: [],
             name: "",
-           
+            fecha: localStorage.getItem("fecha_final"),
+            watchStart: true,
             tab: "campeones",
             tabs: ["campeones", "informacion"],
         };
     },
+    mounted() {
+        if (this.fecha) {
+            this.watchStart = false;
+          
+        }
+    },
     methods: {
+        limpiar(){
+            localStorage.clear();
+        },
+        generateDate() {
+            localStorage.setItem(
+                "fecha_final",
+                new Date().getTime() + 7884000000
+            );
+            this.watchStart = false;
+        },
         open(tab) {
             this.tab = tab;
             this.tabs.forEach((element) => {
@@ -26,20 +53,14 @@ export default {
             document.getElementById(tab).classList.add(tab);
         },
     },
-   
-  
-    mounted(){
-       
-    },
+
     async created() {
         await axios
             .get(
                 "http://ddragon.leagueoflegends.com/cdn/13.17.1/data/es_ES/champion.json"
             )
             .then((res) => {
-              
-                    this.champions =  Object.entries(res.data.data);
-                
+                this.champions = Object.entries(res.data.data);
 
                 // var result = datos1.filter(el => !datos2.includes(el));
             });
@@ -50,10 +71,28 @@ export default {
 <template>
     <div>
         <Toast />
-        <div class="title-main-container"></div>
+
         <h1 style="font-weight: 200" class="title-main">
             League of Legens &nbsp;<strong style="color: red">Hardcore</strong>
         </h1>
+        <div
+            style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+            "
+        >
+            <button
+                class="button-start"
+                v-if="watchStart"
+                @click="generateDate()"
+            >
+                <h3>EMPEZAR</h3>
+            </button>
+        </div>
+
+        <span id="countdown"></span>
         <br />
         <div style="display: flex">
             <button @click="open('campeones')" class="menu-button">
@@ -174,6 +213,38 @@ export default {
 .menu-button:hover {
     h3 {
         // scale: 1.1;
+    }
+}
+#fecha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+}
+.button-start {
+    transition: all 300ms;
+    width: 200px;
+    height: 80px;
+    background-color: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: inset 0px 0 10px red;
+
+    h3 {
+        transition: all 300ms;
+    }
+}
+.button-start:hover {
+    box-shadow: inset 0px 0 10px rgba(255, 0, 0, 0), 0 0 20px red;
+    transition: all 300ms;
+    h3 {
+        text-shadow: 0 0 10px red;
+        font-size: x-large;
+        color: rgb(255, 150, 150);
+        transition: all 300ms;
     }
 }
 </style>

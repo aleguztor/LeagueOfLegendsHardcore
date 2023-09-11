@@ -4,11 +4,11 @@ import ConfirmPopup from "primevue/confirmpopup";
 import { useConfirm } from "primevue/useconfirm";
 
 export default {
-    components: { ConfirmPopup,useConfirm },
+    components: { ConfirmPopup, useConfirm },
     data() {
         return {
             name: "",
-           confirm:useConfirm(),
+            confirm: useConfirm(),
             toast: useToast(),
             localStorageChamps: JSON.parse(
                 localStorage.getItem("campeonesDeleted")
@@ -18,12 +18,20 @@ export default {
     },
     props: ["champions"],
     computed: {
+        countAlive(){
+            if(this.localStorageChamps){
+                return this.champions.length -this.localStorageChamps.length
+            }
+            return this.champions.length 
+        },
         championsToShow() {
             if (this.name.length > 0) {
                 let newFind = this.champions.filter((champ) =>
                     champ[1].name
                         .toLocaleLowerCase()
-                        .includes(this.name.toLocaleLowerCase())
+                        .includes(this.name.toLocaleLowerCase()) && !this.localStorageChamps.some(
+                                (campeon) => campeon[0] === champ[0]
+                            )
                 );
 
                 return newFind;
@@ -42,20 +50,20 @@ export default {
         },
     },
     methods: {
-        confirm1(event,champ) {
-           this.confirm.require({
-                target: event.currentTarget,
-                acceptLabel:"Sí",
-                message: "Estás seguro de que quieres continuar con la eliminación?",
-                icon: "pi pi-exclamation-triangle",
-                accept: () => {
-                    this.insertStorage(champ)
-                  
-                },
-                reject: () => {
-                   
-                },
-            });
+        confirm1(event, champ) {
+            if (!showDeleted) {
+                this.confirm.require({
+                    target: event.currentTarget,
+                    acceptLabel: "Sí",
+                    message:
+                        "Estás seguro de que quieres continuar con la eliminación?",
+                    icon: "pi pi-exclamation-triangle",
+                    accept: () => {
+                        this.insertStorage(champ);
+                    },
+                    reject: () => {},
+                });
+            }
         },
         viewDeletedChamps() {
             this.showDeleted = !this.showDeleted;
@@ -142,7 +150,7 @@ export default {
                 "
             >
                 <h3 style="width: 150px; text-align: center">
-                    {{ showDeleted ? "ELIMINADOS" : "VIVOS" }}
+                    {{ showDeleted ? "ELIMINADOS "+localStorageChamps.length : "VIVOS "+countAlive  }}
                 </h3>
                 <button
                     :class="showDeleted ? 'notshowDeleted' : 'showDeleted'"
@@ -164,7 +172,7 @@ export default {
         <ConfirmPopup></ConfirmPopup>
         <div
             style="color: black; height: 200px; aspect-ratio: 1"
-            @click="confirm1($event,champion)"
+            @click="confirm1($event, champion)"
             id="pj"
             class="pj"
             v-bind:key="key"

@@ -23,7 +23,8 @@
             </h4>
             <p style="font-size: 22px;">
                Esto no es para siempre, el sistema se reseteará una vez pasados 3 meses 
-               y podrás volver a jugar con tus personajes.
+               y podrás volver a jugar con tus personajes. <br> 
+               Dale al botón de "Empezar" para comenzar tu hardcore season!
             </p>
             <br>
           <p style="font-size: 25px;color: rgb(72, 255, 0);">¿Preparado para este reto?</p>
