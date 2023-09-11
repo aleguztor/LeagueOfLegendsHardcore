@@ -26,7 +26,7 @@ var totalTime = localStorage.getItem("fecha_final");
         </div>
         </div>
         `;
-        if (fechaFinal == 0) {
+        if (fechaFinal <= 0) {
             alert("Llegaste al final de tu Hardcorse season!!");
             localStorage.clear();
         } else {
