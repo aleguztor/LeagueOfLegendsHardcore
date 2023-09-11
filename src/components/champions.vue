@@ -10,28 +10,29 @@ export default {
             name: "",
             confirm: useConfirm(),
             toast: useToast(),
-            localStorageChamps: JSON.parse(
-                localStorage.getItem("campeonesDeleted")
-            ),
+            localStorageChamps:  localStorage.getItem("campeonesDeleted")? JSON.parse(
+                localStorage.getItem("campeonesDeleted")):[],
             showDeleted: false,
         };
     },
     props: ["champions"],
     computed: {
-        countAlive(){
-            if(this.localStorageChamps){
-                return this.champions.length -this.localStorageChamps.length
+        countAlive() {
+            if (this.localStorageChamps) {
+                return this.champions.length - this.localStorageChamps.length;
             }
-            return this.champions.length 
+            return this.champions.length;
         },
         championsToShow() {
             if (this.name.length > 0) {
-                let newFind = this.champions.filter((champ) =>
-                    champ[1].name
-                        .toLocaleLowerCase()
-                        .includes(this.name.toLocaleLowerCase()) && !this.localStorageChamps.some(
-                                (campeon) => campeon[0] === champ[0]
-                            )
+                let newFind = this.champions.filter(
+                    (champ) =>
+                        champ[1].name
+                            .toLocaleLowerCase()
+                            .includes(this.name.toLocaleLowerCase()) &&
+                        !this.localStorageChamps.some(
+                            (campeon) => campeon[0] === champ[0]
+                        )
                 );
 
                 return newFind;
@@ -146,12 +147,23 @@ export default {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 50px;
+                    gap: 50px; flex-wrap: wrap;
                 "
             >
-                <h3 style="width: 150px; text-align: center">
-                    {{ showDeleted ? "ELIMINADOS "+localStorageChamps.length : "VIVOS "+countAlive  }}
+            <h3 style="width: 150px; text-align: center">
+                    {{
+                       
+                          
+                             "VIVOS " + countAlive
+                    }}
                 </h3>
+                <h3 style="width: 150px; text-align: center">
+                    {{
+                       "ELIMINADOS " + localStorageChamps.length
+                          
+                    }}
+                </h3>
+               
                 <button
                     :class="showDeleted ? 'notshowDeleted' : 'showDeleted'"
                     style="
